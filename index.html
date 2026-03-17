@@ -440,9 +440,9 @@ function renderCheckoutStep(){
       '<div class="checkout-nav"><button class="btn-back" onclick="checkoutStep=2;updateSteps();renderCheckoutStep()">Regresar</button><button class="btn-confirm" onclick="confirmOrder()">Confirmar pedido</button></div>';
     orderData.payment='transfer';
   } else if(checkoutStep===4){
-    var orderNum='DRP-'+Date.now().toString(36).toUpperCase();
+    var orderNum=orderData.orderNum||'DRP-'+Date.now().toString(36).toUpperCase();
     var total=getCartTotal()+getShipping();
-    body.innerHTML='<div class="confirm-success"><div class="confirm-icon">✅</div><h3>¡PEDIDO CONFIRMADO!</h3><p>Tu pedido ha sido registrado exitosamente</p><div class="order-num">'+orderNum+'</div><p>Te contactaremos por WhatsApp al <strong>'+orderData.phone+'</strong> para confirmar tu pago y coordinar el envío.</p><div class="confirm-details"><h5>Resumen</h5><p><strong>Total:</strong> $'+total.toLocaleString()+' MXN<br><strong>Pago:</strong> '+(orderData.payment==='transfer'?'Transferencia bancaria':orderData.payment==='oxxo'?'Pago en OXXO':'Tarjeta')+'<br><strong>Envío a:</strong> '+orderData.address+', '+orderData.colonia+', '+orderData.city+', '+orderData.state+'</p></div><button class="confirm-close-btn" onclick="finishOrder()">Seguir comprando</button></div>';
+    body.innerHTML='<div class="confirm-success"><div class="confirm-icon">✅</div><h3>¡PEDIDO CONFIRMADO!</h3><p>Tu pedido ha sido registrado exitosamente</p><div class="order-num">'+orderNum+'</div><p>Se abrió WhatsApp con los detalles de tu pedido.<br><strong>Envía el mensaje</strong> y adjunta tu comprobante de pago para que procesemos tu envío.</p><p style="margin-top:12px;font-size:.7rem;color:var(--text-dim)">¿No se abrió WhatsApp? <a href="https://wa.me/'+WA+'" target="_blank" style="color:var(--accent)">Toca aquí</a></p><div class="confirm-details"><h5>Resumen</h5><p><strong>Pedido:</strong> '+orderNum+'<br><strong>Total:</strong> $'+total.toLocaleString()+' MXN<br><strong>Pago:</strong> '+(orderData.payment==='transfer'?'Transferencia bancaria':orderData.payment==='oxxo'?'Pago en OXXO':'Tarjeta')+'<br><strong>Envío a:</strong> '+orderData.address+', '+orderData.colonia+', '+orderData.city+', '+orderData.state+'</p></div><button class="confirm-close-btn" onclick="finishOrder()">Seguir comprando</button></div>';
   }
 }
 
@@ -455,7 +455,29 @@ function goStep2(){
 }
 function goStep3(){checkoutStep=3;updateSteps();renderCheckoutStep()}
 function selectPayment(el,method){var opts=document.querySelectorAll('.payment-opt');for(var i=0;i<opts.length;i++)opts[i].classList.remove('selected');el.classList.add('selected');orderData.payment=method}
-function confirmOrder(){checkoutStep=4;updateSteps();renderCheckoutStep()}
+function confirmOrder(){
+  var orderNum='DRP-'+Date.now().toString(36).toUpperCase();
+  orderData.orderNum=orderNum;
+  var sub=getCartTotal(),ship=getShipping(),total=sub+ship;
+  var msg='🔥 *NUEVO PEDIDO DRPOUT* 🔥%0A%0A';
+  msg+='📋 *Pedido:* '+orderNum+'%0A';
+  msg+='━━━━━━━━━━━━━━━%0A';
+  for(var i=0;i<cart.length;i++){var it=cart[i];msg+='▪ '+it.name+'%0A   Talla: '+it.size+' | Cant: '+it.qty+' | $'+(it.price*it.qty).toLocaleString()+'%0A'}
+  msg+='━━━━━━━━━━━━━━━%0A';
+  msg+='Subtotal: $'+sub.toLocaleString()+'%0A';
+  msg+='Envío: '+(ship===0?'GRATIS':'$'+ship)+'%0A';
+  msg+='💰 *TOTAL: $'+total.toLocaleString()+' MXN*%0A%0A';
+  msg+='💳 *Pago:* '+(orderData.payment==='transfer'?'Transferencia bancaria':orderData.payment==='oxxo'?'Pago en OXXO':'Tarjeta')+'%0A%0A';
+  msg+='📦 *Datos de envío:*%0A';
+  msg+=''+orderData.name+'%0A';
+  msg+=''+orderData.address+', '+orderData.colonia+'%0A';
+  msg+=''+orderData.city+', '+orderData.state+' C.P. '+orderData.zip+'%0A';
+  msg+='📞 '+orderData.phone+'%0A';
+  msg+='✉️ '+orderData.email+'%0A%0A';
+  msg+='Adjunto mi comprobante de pago 👇';
+  window.open('https://wa.me/'+WA+'?text='+msg,'_blank');
+  checkoutStep=4;updateSteps();renderCheckoutStep();
+}
 function finishOrder(){cart=[];updateCartUI();closeCheckout();orderData={};showToast('¡Gracias por tu compra! Te contactamos pronto 🔥')}
 
 /* ═══ SEARCH ═══ */
