@@ -224,6 +224,10 @@ footer{border-top:1px solid var(--border);padding:60px 40px 30px}
   .form-row{flex-direction:column}.checkout-body{padding:20px}
 }
 @media(max-width:480px){.products-grid{grid-template-columns:1fr 1fr;gap:10px}.footer-grid{grid-template-columns:1fr}.hero-glitch{letter-spacing:6px}}
+.shopify-buy-btn{width:100%;margin-top:6px;min-height:50px}
+.shopify-buy-btn iframe{max-width:100%!important}
+.shopify-detail-btn{margin-bottom:12px}
+.shopify-badge{display:inline-block;background:#d62020;color:#fff;font-size:.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;border-radius:3px;margin-left:8px;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -357,7 +361,7 @@ var products=[
 {id:3,name:'Playera Nike Sportswear Street Mujer',price:399,cat:'deporte',catLabel:'Deporte',tag:'Nuevo',img:'img/nike-street-mujer.jpg',sizes:['XS','S','M','L'],desc:'Playera Nike Sportswear Street para mujer en blanco. Corte relajado con estilo urbano.'},
 {id:4,name:'Camiseta New Orleans Saints Nike',price:1099,cat:'deporte',catLabel:'Deporte',tag:'Hot',img:'img/saints-nike.jpg',sizes:['S','M','L','XL','XXL'],desc:'Camiseta de juego oficial de los New Orleans Saints en negro carbono con malla transpirable.'},
 {id:5,name:'Nike Air Force 1',price:2300,cat:'calzado',catLabel:'Calzado',tag:'Best Seller',img:'img/nike-air-force.jpg',sizes:['25','26','27','28','29'],desc:'El ícono del streetwear. Nike Air Force 1 con suela Air encapsulada y cuero premium.'},
-{id:6,name:'Nike Blazer Mid',price:1900,cat:'calzado',catLabel:'Calzado',tag:'',img:'img/nike-blazer-mid.jpg',sizes:['25','26','27','28','29'],desc:'Silueta retro-basketball elevada al streetwear moderno. Caña alta y suela vulcanizada.'},
+{id:6,name:'Nike Blazer Mid',price:1900,cat:'calzado',catLabel:'Calzado',tag:'',img:'img/nike-blazer-mid.jpg',sizes:['25','26','27','28','29'],desc:'Silueta retro-basketball elevada al streetwear moderno. Caña alta y suela vulcanizada.',shopifyId:'8325148246070'},
 {id:7,name:'Sueter Jordan Mid Green',price:1600,cat:'hoodies',catLabel:'Hoodies',tag:'Hot',img:'img/jordan-mid.jpg',sizes:['S','M','L','XL'],desc:'Suéter Jordan en verde militar con logo Jumpman bordado. Fleece grueso y bolsillo canguro.'},
 {id:8,name:'LANREN Tops para Mujer',price:200,cat:'deporte',catLabel:'Deporte',tag:'',img:'img/lanren-tops.jpg',sizes:['XS','S','M','L'],desc:'Top deportivo LANREN para mujer. Tela elástica de secado rápido con soporte medio.'},
 {id:9,name:'Tops Deportivo Negro',price:200,cat:'deporte',catLabel:'Deporte',tag:'',img:'img/tops-deportivo.jpg',sizes:['XS','S','M','L'],desc:'Top deportivo en negro con diseño minimalista. Perfecto para gym o uso diario.'},
@@ -394,7 +398,7 @@ var waLink=document.getElementById('cartWhatsapp');if(cart.length>0){var msg='Ho
 var el=document.getElementById('cartItems');if(!cart.length){el.innerHTML='<div class="cart-empty"><div class="empty-icon">🛒</div><p>Tu carrito está vacío</p></div>';return}var h='';for(var j=0;j<cart.length;j++){var it=cart[j];h+='<div class="cart-item"><div class="cart-item-img"><img src="'+it.img+'" alt="'+it.name+'"></div><div class="cart-item-details"><h4>'+it.name+'</h4><div class="item-size">Talla: '+it.size+'</div><div class="item-price">$'+(it.price*it.qty).toLocaleString()+'</div><div class="cart-item-qty"><button class="qty-btn" onclick="changeQty('+j+',-1)">−</button><span class="qty-num">'+it.qty+'</span><button class="qty-btn" onclick="changeQty('+j+',1)">+</button></div><button class="cart-remove" onclick="removeFromCart('+j+')">Eliminar</button></div></div>'}el.innerHTML=h}
 
 /* ═══ DETAIL ═══ */
-function openDetail(id){var p=null;for(var i=0;i<products.length;i++)if(products[i].id===id){p=products[i];break}detailSelectedSize[id]=selectedSizes[id]||p.sizes[0];document.getElementById('detailImg').innerHTML='<img src="'+p.img+'" alt="'+p.name+'">';var sb='';for(var s=0;s<p.sizes.length;s++){var sel=detailSelectedSize[id]===p.sizes[s]?' selected':'';sb+='<button class="size-btn'+sel+'" onclick="detailSelectSize('+id+',\''+p.sizes[s]+'\',this)">'+p.sizes[s]+'</button>'}var waMsg='Hola DRPOUT 🔥 Me interesa: '+p.name+' - Talla '+detailSelectedSize[id]+' ($'+p.price.toLocaleString()+')';document.getElementById('detailInfo').innerHTML='<span class="d-cat">'+p.catLabel+'</span><h2>'+p.name+'</h2><span class="d-price">$'+p.price.toLocaleString()+' MXN</span><p class="d-desc">'+p.desc+'</p><span class="d-label">Talla</span><div class="detail-sizes">'+sb+'</div><button class="size-guide-link" onclick="openSizeGuide()">📏 Ver guía de tallas</button><div class="detail-actions"><button class="btn-add" id="detailAddBtn" onclick="addToCartFromDetail('+id+')">Agregar al carrito</button><a class="btn-whatsapp" id="detailWa" href="https://wa.me/'+WA+'?text='+encodeURIComponent(waMsg)+'" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp</a></div>';document.getElementById('detailOverlay').classList.add('open');document.body.style.overflow='hidden'}
+function openDetail(id){var p=null;for(var i=0;i<products.length;i++)if(products[i].id===id){p=products[i];break}detailSelectedSize[id]=selectedSizes[id]||p.sizes[0];document.getElementById('detailImg').innerHTML='<img src="'+p.img+'" alt="'+p.name+'">';var sb='';for(var s=0;s<p.sizes.length;s++){var sel=detailSelectedSize[id]===p.sizes[s]?' selected':'';sb+='<button class="size-btn'+sel+'" onclick="detailSelectSize('+id+',\''+p.sizes[s]+'\',this)">'+p.sizes[s]+'</button>'}var waMsg='Hola DRPOUT 🔥 Me interesa: '+p.name+' - Talla '+detailSelectedSize[id]+' ($'+p.price.toLocaleString()+')';var detailActions=p.shopifyId?'<div id="shopify-detail-'+p.id+'" class="shopify-buy-btn shopify-detail-btn" data-shopify-id="'+p.shopifyId+'"></div><a class="btn-whatsapp" id="detailWa" href="https://wa.me/'+WA+'?text='+encodeURIComponent(waMsg)+'" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp</a>':'<button class="btn-add" id="detailAddBtn" onclick="addToCartFromDetail('+id+')">Agregar al carrito</button><a class="btn-whatsapp" id="detailWa" href="https://wa.me/'+WA+'?text='+encodeURIComponent(waMsg)+'" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp</a>';document.getElementById('detailInfo').innerHTML='<span class="d-cat">'+p.catLabel+'</span><h2>'+p.name+'</h2><span class="d-price">$'+p.price.toLocaleString()+' MXN</span><p class="d-desc">'+p.desc+'</p>'+(p.shopifyId?'':'<span class="d-label">Talla</span><div class="detail-sizes">'+sb+'</div>')+'<button class="size-guide-link" onclick="openSizeGuide()">📏 Ver guía de tallas</button><div class="detail-actions">'+detailActions+'</div>';document.getElementById('detailOverlay').classList.add('open');document.body.style.overflow='hidden';if(p.shopifyId)setTimeout(initShopifyButtons,200)}
 function closeDetail(){document.getElementById('detailOverlay').classList.remove('open');document.body.style.overflow=''}
 function detailSelectSize(id,sz,btn){detailSelectedSize[id]=sz;selectedSizes[id]=sz;var b=btn.parentElement.querySelectorAll('.size-btn');for(var i=0;i<b.length;i++)b[i].classList.remove('selected');btn.classList.add('selected');var p=null;for(var i=0;i<products.length;i++)if(products[i].id===id){p=products[i];break}document.getElementById('detailWa').href='https://wa.me/'+WA+'?text='+encodeURIComponent('Hola DRPOUT 🔥 Me interesa: '+p.name+' - Talla '+sz+' ($'+p.price.toLocaleString()+')')}
 function addToCartFromDetail(id){selectedSizes[id]=detailSelectedSize[id];addToCart(id,null);var btn=document.getElementById('detailAddBtn');btn.textContent='¡Agregado!';btn.classList.add('added');setTimeout(function(){btn.textContent='Agregar al carrito';btn.classList.remove('added')},1200)}
@@ -496,7 +500,230 @@ window.addEventListener('scroll',function(){document.getElementById('navbar').cl
 var na=document.querySelectorAll('.nav-links a');for(var i=0;i<na.length;i++)na[i].addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open');document.getElementById('hamburger').classList.remove('active')});
 document.addEventListener('click',function(e){var sw=document.querySelector('.search-wrap');if(!sw.contains(e.target))document.getElementById('searchBox').classList.remove('open')});
 
-renderProducts();initAnimations();
+renderProducts();initAnimations();initShopifyButtons();
+</script>
+
+<!-- ═══ SHOPIFY BUY BUTTON SDK ═══ -->
+<script type="text/javascript">
+/* Shopify Buy Button Integration for DRPOUT */
+var SHOPIFY_DOMAIN = 'pfueck-wm.myshopify.com';
+var SHOPIFY_TOKEN = '4c5d8f6909eccf2964cbb97e0ee2187e';
+var shopifyClient = null;
+var shopifyUI = null;
+
+function initShopifyButtons() {
+  var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+  function doInit() {
+    shopifyClient = ShopifyBuy.buildClient({
+      domain: SHOPIFY_DOMAIN,
+      storefrontAccessToken: SHOPIFY_TOKEN
+    });
+    ShopifyBuy.UI.onReady(shopifyClient).then(function(ui) {
+      shopifyUI = ui;
+      /* Find all Shopify button placeholders and create components */
+      var btns = document.querySelectorAll('.shopify-buy-btn');
+      for (var i = 0; i < btns.length; i++) {
+        var shopifyId = btns[i].getAttribute('data-shopify-id');
+        if (shopifyId && !btns[i].hasAttribute('data-initialized')) {
+          btns[i].setAttribute('data-initialized', 'true');
+          createShopifyButton(ui, shopifyId, btns[i]);
+        }
+      }
+    });
+  }
+  if (window.ShopifyBuy && window.ShopifyBuy.UI) {
+    doInit();
+  } else {
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = scriptURL;
+    script.onload = doInit;
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
+  }
+}
+
+function createShopifyButton(ui, shopifyId, node) {
+  ui.createComponent('product', {
+    id: shopifyId,
+    node: node,
+    moneyFormat: '%24%20%7B%7Bamount%7D%7D',
+    options: {
+      "product": {
+        "contents": {
+          "img": false,
+          "title": false,
+          "price": false,
+          "description": false,
+          "button": true,
+          "buttonWithQuantity": false,
+          "options": true
+        },
+        "styles": {
+          "product": {
+            "text-align": "left",
+            "@media (min-width: 601px)": {
+              "max-width": "100%",
+              "margin-left": "0px",
+              "margin-bottom": "0px"
+            }
+          },
+          "button": {
+            "font-family": "'Bebas Neue', sans-serif",
+            "font-size": "13px",
+            "letter-spacing": "3px",
+            "padding-top": "14px",
+            "padding-bottom": "14px",
+            "color": "#000",
+            "width": "100%",
+            ":hover": {
+              "color": "#000",
+              "background-color": "#ff4444"
+            },
+            "background-color": "#ff3333",
+            ":focus": {
+              "background-color": "#ff4444"
+            },
+            "border-radius": "0px",
+            "padding-left": "20px",
+            "padding-right": "20px"
+          },
+          "quantityInput": {
+            "font-size": "13px",
+            "padding-top": "14px",
+            "padding-bottom": "14px"
+          },
+          "option": {
+            "font-family": "'Outfit', sans-serif",
+            "font-size": "12px",
+            "color": "#fff"
+          }
+        },
+        "text": {
+          "button": "COMPRAR CON TARJETA"
+        },
+        "googleFonts": ["Bebas Neue"]
+      },
+      "productSet": {
+        "styles": {
+          "products": {
+            "@media (min-width: 601px)": {
+              "margin-left": "-20px"
+            }
+          }
+        }
+      },
+      "modalProduct": {
+        "contents": {
+          "img": false,
+          "imgWithCarousel": true,
+          "button": false,
+          "buttonWithQuantity": true
+        },
+        "styles": {
+          "product": {
+            "@media (min-width: 601px)": {
+              "max-width": "100%",
+              "margin-left": "0px",
+              "margin-bottom": "0px"
+            }
+          },
+          "button": {
+            "font-family": "'Bebas Neue', sans-serif",
+            "font-size": "14px",
+            "letter-spacing": "3px",
+            "padding-top": "15px",
+            "padding-bottom": "15px",
+            "color": "#000",
+            ":hover": {
+              "color": "#000",
+              "background-color": "#ff4444"
+            },
+            "background-color": "#ff3333",
+            ":focus": {
+              "background-color": "#ff4444"
+            },
+            "border-radius": "0px",
+            "padding-left": "45px",
+            "padding-right": "45px"
+          }
+        },
+        "text": {
+          "button": "AGREGAR AL CARRITO"
+        }
+      },
+      "option": {
+        "styles": {
+          "label": {
+            "color": "#ccc",
+            "font-family": "'Outfit', sans-serif"
+          },
+          "select": {
+            "color": "#fff",
+            "background": "#1a1a1a",
+            "border": "1px solid #333"
+          }
+        }
+      },
+      "cart": {
+        "styles": {
+          "button": {
+            "font-family": "'Bebas Neue', sans-serif",
+            "font-size": "14px",
+            "letter-spacing": "3px",
+            "padding-top": "15px",
+            "padding-bottom": "15px",
+            "color": "#000",
+            ":hover": {
+              "color": "#000",
+              "background-color": "#ff4444"
+            },
+            "background-color": "#ff3333",
+            ":focus": {
+              "background-color": "#ff4444"
+            },
+            "border-radius": "0px"
+          }
+        },
+        "text": {
+          "total": "Subtotal",
+          "button": "PAGAR AHORA",
+          "notice": "Envío e impuestos calculados en el checkout"
+        },
+        "popup": false
+      },
+      "toggle": {
+        "styles": {
+          "toggle": {
+            "background-color": "#ff3333",
+            ":hover": {
+              "background-color": "#ff4444"
+            },
+            ":focus": {
+              "background-color": "#ff4444"
+            }
+          },
+          "count": {
+            "font-size": "14px",
+            "color": "#000",
+            ":hover": {
+              "color": "#000"
+            }
+          },
+          "iconPath": {
+            "fill": "#000"
+          }
+        }
+      }
+    }
+  });
+}
+
+/* Re-init Shopify buttons when products are re-rendered (filtering) */
+var originalFilter = filterProducts;
+filterProducts = function(c) {
+  originalFilter(c);
+  setTimeout(initShopifyButtons, 100);
+};
 </script>
 </body>
 </html>
